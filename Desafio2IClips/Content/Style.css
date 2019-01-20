@@ -70,6 +70,7 @@ body {
 	top: 50%;
 	right: 0px;
 	margin-top: -12px;
+    margin-right: 10px;
 	background-color: #3596C9;
 	color: #FFFFFF;
 	text-transform: capitalize;
@@ -88,10 +89,11 @@ body {
 	top: 50%;
 	right: 0px;
 	margin-top: -12px;
+    margin-right: 10px;
 	background-color: #B33C7D;
 	color: #FFFFFF;
 	text-transform: capitalize;
-	padding: 5px 10px;
+	padding: 1px 10px;
 	position: absolute;
 	display: block;
 	border-radius: 50%;

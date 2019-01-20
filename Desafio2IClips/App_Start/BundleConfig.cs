@@ -24,7 +24,7 @@ namespace Desafio2IClips
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/Style.css"));
+                      "~/Content/style.css"));
         }
     }
 }

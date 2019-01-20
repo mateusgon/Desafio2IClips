@@ -13,48 +13,7 @@ DisplayContent = function (element, emAndamento) {
 $('#ordena').click(function () {
 
     var titulo = document.getElementById('titulo');
-
-    LoadTableRowOrdenada = function () {
-        var filtroSituacao = titulo.innerHTML;
-
-        $("#idTabela tr").remove();
-
-        $.ajax({
-            type: 'GET',
-            url: '/Pessoas/GetPessoas',
-            dataType: 'json',
-            data: { situacao: filtroSituacao, tipoOrdenacao: '1' },
-            success: function (data) {
-                $.each(data, function (i, data) {
-                    var newRow = $("<tr>");
-                    var cols = "";
-
-                    cols += '<td> <input type="checkbox"> </td>'
-                    cols += '<td>' + data.Nome + '</td>';
-                    cols += '<td> <a class="link" href="https://' + data.Email + '">' + data.Email + '</a> </td>';
-
-                    if (data.Situacao == filtroSituacao) {
-                        cols += '<td class="td-action"> <div class="notification"> Novo </div> </td>'
-                    }
-                    else {
-                        cols += '<td class="td-action"> <div class="notification2"> Alteração </div> </td>'
-                    }
-
-                    newRow.append(cols);
-                    $(".table").append(newRow);
-                });
-
-                titulo.innerHTML = filtroSituacao;
-                LoadSelectedItems();
-                return data.length;
-            },
-            error: function (ex) {
-                alert(ex);
-            }
-        });
-    };
-
-    LoadTableRowOrdenada();
+    LoadTableRow(titulo.innerHTML, '1');
 });
 
 (function () {
@@ -67,14 +26,51 @@ $('#ordena').click(function () {
 
     LoadTableRowAtrasada = function () {
         var filtroSituacao = "Atrasado";
+        LoadTableRow(filtroSituacao, '0');
+    };
 
-        $("#idTabela tr").remove();
+    LoadTableRowAndamento = function () {
+        var filtroSituacao = "Em andamento";
+        LoadTableRow(filtroSituacao, '0');
+    }
 
+    LoadTableSizeAtrasada = function () {
+        var filtroSituacao = "Atrasado";
+        LoadTableSize(filtroSituacao);
+    };
+
+    LoadTableSizeEmAndamento = function () {
+        var filtroSituacao = "Em andamento";
+        LoadTableSize(filtroSituacao);
+    };
+
+    LoadTableSize = function (filtroSituacao) {
         $.ajax({
             type: 'GET',
             url: '/Pessoas/GetPessoas',
             dataType: 'json',
             data: { situacao: filtroSituacao, tipoOrdenacao: '0' },
+            success: function (data) {
+                if (filtroSituacao == "Atrasado") {
+                    contadorAtrasada.innerHTML = data.length;
+                }
+                else {
+                    contadorAndamento.innerHTML = data.length;
+                }
+            },
+            error: function (ex) {
+                alert(ex);
+            }
+        });
+    }
+
+    LoadTableRow = function (filtroSituacao, tipoOrd) {
+        $("#idTabela tr").remove();
+        $.ajax({
+            type: 'GET',
+            url: '/Pessoas/GetPessoas',
+            dataType: 'json',
+            data: { situacao: filtroSituacao, tipoOrdenacao: tipoOrd },
             success: function (data) {
                 $.each(data, function (i, data) {
                     var newRow = $("<tr>");
@@ -103,103 +99,27 @@ $('#ordena').click(function () {
                 alert(ex);
             }
         });
-    };
-
-    LoadTableSizeAtrasada = function () {
-        var filtroSituacao = "Atrasado";
-        $.ajax({
-            type: 'GET',
-            url: '/Pessoas/GetPessoas',
-            dataType: 'json',
-            data: { situacao: filtroSituacao, tipoOrdenacao: '0' },
-            success: function (data) {
-                contadorAtrasada.innerHTML = data.length;
-            },
-            error: function (ex) {
-                alert(ex);
-            }
-        });
-    };
-
-    LoadTableRowAndamento = function () {
-
-        var filtroSituacao = "Em andamento";
-
-        $("#idTabela tr").remove();
-
-        $.ajax({
-            type: 'GET',
-            url: '/Pessoas/GetPessoas',
-            dataType: 'json',
-            data: { situacao: filtroSituacao, tipoOrdenacao: '0' },
-            success: function (data) {
-                $.each(data, function (i, data) {
-                    var newRow = $("<tr>");
-                    var cols = "";
-
-                    cols += '<td> <input type="checkbox"> </td>'
-                    cols += '<td>' + data.Nome + '</td>';
-                    cols += '<td> <a class="link" href="https://' + data.Email + '">' + data.Email + '</a> </td>';
-
-                    if (data.Situacao == "Em andamento") {
-                        cols += '<td class="td-action"> <div class="notification"> Novo </div> </td>'
-                    }
-                    else {
-                        cols += '<td class="td-action"> <div class="notification2"> Alteração </div> </td>'
-                    }
-
-                    newRow.append(cols);
-                    $(".table").append(newRow);
-                });
-                
-                titulo.innerHTML = filtroSituacao;
-                LoadSelectedItems();
-            },
-            error: function (ex) {
-                alert(ex);
-            }
-        });
-
-    };
-
-    LoadTableSizeEmAndamento = function () {
-        var filtroSituacao = "Em andamento";
-        $.ajax({
-            type: 'GET',
-            url: '/Pessoas/GetPessoas',
-            dataType: 'json',
-            data: { situacao: filtroSituacao, tipoOrdenacao: '0' },
-            success: function (data) {
-                contadorAndamento.innerHTML = data.length;
-            },
-            error: function (ex) {
-                alert(ex);
-            }
-        });
-    };
-
+    }
+    
     LoadSelectedItems = function () {
         for (var i = 0; i < linhas.length; i++) {
             var linha = linhas[i];
             linha.addEventListener("click", function () {
-                selLinha(this, false);
+                SelLinha(this);
             });
         }
-    }
+    };
 
-    LoadTableRowAndamento();
-    LoadTableSizeAtrasada();
-    LoadTableSizeEmAndamento();
-})(jQuery);
-
-
-function selLinha(linha, multiplos) {
-    if (!multiplos) {
+    SelLinha = function (linha) {
         var linhas = linha.parentElement.getElementsByTagName("tr");
         for (var i = 0; i < linhas.length; i++) {
             var linha_ = linhas[i];
             linha_.classList.remove("selecionado");
         }
-    }
-    linha.classList.toggle("selecionado");
-}
+        linha.classList.toggle("selecionado");
+    };
+
+    LoadTableRowAndamento();
+    LoadTableSizeAtrasada();
+    LoadTableSizeEmAndamento();
+})(jQuery);
