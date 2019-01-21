@@ -76,15 +76,18 @@ $('#ordena').click(function () {
                     var newRow = $("<tr>");
                     var cols = "";
 
-                    cols += '<td> <input type="checkbox"> </td>'
+                    cols += '<td> <input class="td-align" type="checkbox"> </td>'
                     cols += '<td>' + data.Nome + '</td>';
                     cols += '<td> <a class="link" href="https://' + data.Email + '">' + data.Email + '</a> </td>';
 
-                    if (data.Situacao == filtroSituacao) {
+                    if (i % 2 == 0) {
                         cols += '<td class="td-action"> <div class="notification"> Novo </div> </td>'
                     }
-                    else {
+                    else if (i == 1) {
                         cols += '<td class="td-action"> <div class="notification2"> Alteração </div> </td>'
+                    }
+                    else {
+                        cols += '<td class="td-action"> </td>'
                     }
 
                     newRow.append(cols);
